@@ -14,6 +14,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('register', 'AuthController@register');
+Route::post('login', 'AuthController@login');
+Route::get('authors-list', 'GuestController@getAuthors');
+Route::get('books-list', 'GuestController@getBooks');
+Route::get('book-author/{id}', 'GuestController@booksByAuthor');
+
+
+Route::group([
+    'middleware' => 'jwt',
+    'prefix' => 'auth',
+
+], function () {
+
+    Route::post('logout', 'AuthController@logout');
+    Route::post('me', 'AuthController@me');
+    Route::apiResource('books', 'UserController')->only([
+        'index',
+        'destroy',
+        'store',
+        'update',
+    ]);
+
 });
